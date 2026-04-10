@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retriever Deletion Dependencies Mockup</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/design-system/2.22.3/styles/salesforce-lightning-design-system.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Salesforce Sans', Arial, sans-serif;
+            background-color: #f3f2f2;
+        }
+
+        .slds-scope {
+            height: 100vh;
+        }
+
+        /* Header */
+        .app-header {
+            background-color: #fff;
+            border-bottom: 1px solid #dddbda;
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .app-header h1 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin: 0;
+            color: #080707;
+        }
+
+        /* Sidebar */
+        .app-layout {
+            display: flex;
+            height: calc(100vh - 60px);
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: #f3f2f2;
+            border-right: 1px solid #dddbda;
+            padding: 1rem 0;
+        }
+
+        .sidebar-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-section-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #706e6b;
+            text-transform: uppercase;
+            padding: 0 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-item {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            color: #080707;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sidebar-item:hover {
+            background-color: #f3f2f2;
+        }
+
+        .sidebar-item.active {
+            background-color: #e8f4fd;
+            border-left: 2px solid #0176d3;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            background-color: #fff;
+            overflow-y: auto;
+        }
+
+        .page-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #dddbda;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-header-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .page-header-title h2 {
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin: 0;
+        }
+
+        .page-header-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            background-color: #e8f4fd;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            color: #014486;
+        }
+
+        /* Tabs */
+        .tabs-container {
+            padding: 0 2rem;
+            border-bottom: 1px solid #dddbda;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .tab {
+            padding: 1rem 0;
+            cursor: pointer;
+            color: #706e6b;
+            border-bottom: 2px solid transparent;
+            font-weight: 400;
+        }
+
+        .tab:hover {
+            color: #080707;
+        }
+
+        .tab.active {
+            color: #0176d3;
+            border-bottom-color: #0176d3;
+            font-weight: 700;
+        }
+
+        /* Content Area */
+        .content-area {
+            padding: 2rem;
+        }
+
+        .details-section {
+            margin-bottom: 2rem;
+        }
+
+        .details-section h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem 2rem;
+        }
+
+        .detail-item {
+            margin-bottom: 1rem;
+        }
+
+        .detail-label {
+            font-size: 0.75rem;
+            color: #706e6b;
+            margin-bottom: 0.25rem;
+            font-weight: 700;
+        }
+
+        .detail-value {
+            font-size: 0.875rem;
+            color: #080707;
+        }
+
+        .detail-value a {
+            color: #0176d3;
+            text-decoration: none;
+        }
+
+        .detail-value a:hover {
+            text-decoration: underline;
+        }
+
+        /* Integrations Tab */
+        .dependencies-list {
+            border: 1px solid #dddbda;
+            border-radius: 0.25rem;
+        }
+
+        .dependency-group {
+            border-bottom: 1px solid #dddbda;
+        }
+
+        .dependency-group:last-child {
+            border-bottom: none;
+        }
+
+        .dependency-group-header {
+            padding: 0.75rem 1rem;
+            background-color: #fafaf9;
+            font-weight: 700;
+            font-size: 0.875rem;
+            color: #080707;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dependency-group-header:hover {
+            background-color: #f3f2f2;
+        }
+
+        .dependency-count {
+            color: #706e6b;
+            font-weight: 400;
+        }
+
+        .dependency-items {
+            background-color: #fff;
+        }
+
+        .dependency-item {
+            padding: 0.75rem 1rem 0.75rem 2rem;
+            border-top: 1px solid #f3f2f2;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dependency-item:first-child {
+            border-top: none;
+        }
+
+        .dependency-item-info {
+            flex: 1;
+        }
+
+        .dependency-item-name {
+            font-size: 0.875rem;
+            color: #0176d3;
+            text-decoration: none;
+            font-weight: 400;
+        }
+
+        .dependency-item-name:hover {
+            text-decoration: underline;
+        }
+
+        .dependency-item-name.no-link {
+            color: #080707;
+            cursor: default;
+        }
+
+        .dependency-item-name.no-link:hover {
+            text-decoration: none;
+        }
+
+        .dependency-item-meta {
+            font-size: 0.75rem;
+            color: #706e6b;
+            margin-top: 0.25rem;
+        }
+
+        .companion-org-badge {
+            background-color: #fef8e6;
+            color: #886400;
+            padding: 0.125rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(8, 7, 7, 0.6);
+            z-index: 9000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        /* Modal */
+        .modal {
+            background-color: #fff;
+            border-radius: 0.25rem;
+            box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.16);
+            width: 90%;
+            max-width: 600px;
+        }
+
+        .modal.modal-large {
+            max-width: 800px;
+        }
+
+        .modal-header {
+            padding: 1.5rem 1.5rem 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .modal-header.warning {
+            background-color: #fe9339;
+            padding: 1rem 1.5rem;
+            color: #fff;
+        }
+
+        .modal-header.error {
+            background-color: #c23934;
+            padding: 1rem 1.5rem;
+            color: #fff;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 300;
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.25rem;
+            color: inherit;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            color: #080707;
+            line-height: 1.5;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .modal-body .dependencies-list {
+            margin-top: 1rem;
+        }
+
+        .modal-footer {
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            border-top: 1px solid #dddbda;
+        }
+
+        /* Buttons */
+        .slds-button {
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            font-weight: 400;
+            cursor: pointer;
+            border: 1px solid #dddbda;
+            background-color: #fff;
+            color: #0176d3;
+        }
+
+        .slds-button:hover {
+            background-color: #f3f2f2;
+        }
+
+        .slds-button-brand {
+            background-color: #0176d3;
+            color: #fff;
+            border-color: #0176d3;
+        }
+
+        .slds-button-brand:hover {
+            background-color: #014486;
+        }
+
+        .slds-button-destructive {
+            background-color: #c23934;
+            color: #fff;
+            border-color: #c23934;
+        }
+
+        .slds-button-destructive:hover {
+            background-color: #8b211d;
+        }
+
+        /* Icon styles */
+        .icon {
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 0.25rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #0176d3;
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+
+        .chevron {
+            transition: transform 0.2s;
+        }
+
+        .chevron.expanded {
+            transform: rotate(90deg);
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: #706e6b;
+        }
+
+        .empty-state h3 {
+            font-size: 1.125rem;
+            font-weight: 300;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="slds-scope">
+        <!-- Header -->
+        <div class="app-header">
+            <h1>Data Cloud</h1>
+        </div>
+
+        <!-- Main Layout -->
+        <div class="app-layout">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">AI Models</div>
+                    <div class="sidebar-item">Predict</div>
+                    <div class="sidebar-item">Generate</div>
+                    <div class="sidebar-item active">Retrievers</div>
+                    <div class="sidebar-item">Sentiment Analysis</div>
+                    <div class="sidebar-item">Topic Classification</div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <div class="page-header-title">
+                        <span class="icon">D</span>
+                        <div>
+                            <h2>File_ADL_ADL_Files</h2>
+                            <div class="status-badge">
+                                ⚡ v1 Active
+                            </div>
+                        </div>
+                    </div>
+                    <div class="page-header-actions">
+                        <button class="slds-button">Version 1 (Active)</button>
+                        <button class="slds-button">Test</button>
+                        <button class="slds-button slds-button-brand">Deactivate</button>
+                        <button class="slds-button">Edit Version 1</button>
+                        <button class="slds-button slds-button-destructive" id="deleteBtn">Delete Retriever</button>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="tabs-container">
+                    <div class="tabs">
+                        <div class="tab active" data-tab="overview">Overview</div>
+                        <div class="tab" data-tab="integrations">Integrations</div>
+                    </div>
+                </div>
+
+                <!-- Overview Tab Content -->
+                <div class="content-area" id="overviewTab">
+                    <div class="details-section">
+                        <h3>
+                            <span>▼</span>
+                            Retriever Details
+                        </h3>
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <div class="detail-label">Name</div>
+                                <div class="detail-value">File_ADL_ADL_Files</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Type</div>
+                                <div class="detail-value">Individual</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Description</div>
+                                <div class="detail-value">File_ADL_ADL_Files</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">API Name</div>
+                                <div class="detail-value">File_ADL_ADL_Files_1Cx_Pp727b5b3aa</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Data Source</div>
+                                <div class="detail-value">Data Cloud</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Created On</div>
+                                <div class="detail-value">4/1/2026, 02:04 PM</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Data Model Object</div>
+                                <div class="detail-value"><a href="#">ADL_ADL_Files</a></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Created By</div>
+                                <div class="detail-value"><a href="#">OrgFarm EPIC</a></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Search Index</div>
+                                <div class="detail-value"><a href="#">ADL_ADL_Files</a></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Data Space</div>
+                                <div class="detail-value">default</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="details-section">
+                        <h3>
+                            <span>▼</span>
+                            Version Details
+                        </h3>
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <div class="detail-label">Filter Conditions</div>
+                                <div class="detail-value">No Filters</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Citations</div>
+                                <div class="detail-value">On</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Fields Returned</div>
+                                <div class="detail-value">Chunk, SourceRecordId, DataSource, and DataSourceObject</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Updated On</div>
+                                <div class="detail-value">4/1/2026, 02:04 PM</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Integrations Tab Content -->
+                <div class="content-area" id="integrationsTab" style="display: none;">
+                    <div class="details-section">
+                        <h3>Dependencies</h3>
+                        <p style="color: #706e6b; margin-bottom: 1rem;">
+                            This retriever is referenced by the following components. To delete this retriever, you must first remove these references.
+                        </p>
+
+                        <div class="dependencies-list">
+                            <!-- Agent Actions -->
+                            <div class="dependency-group">
+                                <div class="dependency-group-header" onclick="toggleGroup(this)">
+                                    <span><span class="chevron">▶</span> Agent Actions</span>
+                                    <span class="dependency-count">(1)</span>
+                                </div>
+                                <div class="dependency-items" style="display: none;">
+                                    <div class="dependency-item">
+                                        <div class="dependency-item-info">
+                                            <a href="#" class="dependency-item-name">My Retriever Action</a>
+                                            <div class="dependency-item-meta">API Name: MyRetrieverAction</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Flows -->
+                            <div class="dependency-group">
+                                <div class="dependency-group-header" onclick="toggleGroup(this)">
+                                    <span><span class="chevron">▶</span> Flows</span>
+                                    <span class="dependency-count">(1)</span>
+                                </div>
+                                <div class="dependency-items" style="display: none;">
+                                    <div class="dependency-item">
+                                        <div class="dependency-item-info">
+                                            <a href="#" class="dependency-item-name">My Retriever Flow</a>
+                                            <div class="dependency-item-meta">API Name: MyRetrieverFlow</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Prompt Templates -->
+                            <div class="dependency-group">
+                                <div class="dependency-group-header" onclick="toggleGroup(this)">
+                                    <span><span class="chevron">▶</span> Prompt Templates</span>
+                                    <span class="dependency-count">(1)</span>
+                                </div>
+                                <div class="dependency-items" style="display: none;">
+                                    <div class="dependency-item">
+                                        <div class="dependency-item-info">
+                                            <a href="#" class="dependency-item-name">My Prompt Template</a>
+                                            <div class="dependency-item-meta">API Name: My_Prompt_Template</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Ensemble Retrievers -->
+                            <div class="dependency-group">
+                                <div class="dependency-group-header" onclick="toggleGroup(this)">
+                                    <span><span class="chevron">▶</span> Ensemble Retrievers</span>
+                                    <span class="dependency-count">(1)</span>
+                                </div>
+                                <div class="dependency-items" style="display: none;">
+                                    <div class="dependency-item">
+                                        <div class="dependency-item-info">
+                                            <a href="#" class="dependency-item-name">My Ensemble Retriever</a>
+                                            <div class="dependency-item-meta">API Name: MyEnsembleRetriever</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Data Libraries -->
+                            <div class="dependency-group">
+                                <div class="dependency-group-header" onclick="toggleGroup(this)">
+                                    <span><span class="chevron">▶</span> Data Libraries</span>
+                                    <span class="dependency-count">(1)</span>
+                                </div>
+                                <div class="dependency-items" style="display: none;">
+                                    <div class="dependency-item">
+                                        <div class="dependency-item-info">
+                                            <a href="#" class="dependency-item-name">My Data Library</a>
+                                            <div class="dependency-item-meta">API Name: My_Data_Library</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Companion Org References -->
+                            <div class="dependency-group">
+                                <div class="dependency-group-header" onclick="toggleGroup(this)">
+                                    <span><span class="chevron">▶</span> Companion Org References</span>
+                                    <span class="dependency-count">(1)</span>
+                                </div>
+                                <div class="dependency-items" style="display: none;">
+                                    <div class="dependency-item">
+                                        <div class="dependency-item-info">
+                                            <span class="dependency-item-name no-link">RemoteAgentAction</span>
+                                            <div class="dependency-item-meta">
+                                                <span class="companion-org-badge">Sales Cloud LOB</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div class="modal-overlay" id="confirmModal">
+            <div class="modal">
+                <div class="modal-header warning">
+                    <h2 class="modal-title">Delete retriever version and retriever?</h2>
+                    <button class="modal-close" onclick="closeModal('confirmModal')">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M14.3 11.7l6-6c.3-.3.3-.7 0-1l-.9-1c-.3-.2-.7-.2-1 0l-6 6.1-6.1-6.1c-.3-.3-.7-.3-1 0l-.9.9c-.3.3-.3.7 0 1l6.1 6.1-6.1 6.1c-.3.3-.3.7 0 1l.9.9c.3.3.7.3 1 0l6.1-6.1 6.1 6.1c.3.3.7.3 1 0l.9-.9c.3-.3.3-.7 0-1l-6-6z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Deleting the only retriever version will delete the retriever, which means that prompt templates can't use it. You can't recover a deleted retriever version. Are you sure you want to delete this retriever?
+                </div>
+                <div class="modal-footer">
+                    <button class="slds-button" onclick="closeModal('confirmModal')">Cancel</button>
+                    <button class="slds-button slds-button-destructive" onclick="showErrorModal()">Delete</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Modal with Dependencies -->
+        <div class="modal-overlay" id="errorModal">
+            <div class="modal modal-large">
+                <div class="modal-header error">
+                    <h2 class="modal-title">You can't delete this retriever</h2>
+                    <button class="modal-close" onclick="closeModal('errorModal')">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M14.3 11.7l6-6c.3-.3.3-.7 0-1l-.9-1c-.3-.2-.7-.2-1 0l-6 6.1-6.1-6.1c-.3-.3-.7-.3-1 0l-.9.9c-.3.3-.3.7 0 1l6.1 6.1-6.1 6.1c-.3.3-.3.7 0 1l.9.9c.3.3.7.3 1 0l6.1-6.1 6.1 6.1c.3.3.7.3 1 0l.9-.9c.3-.3.3-.7 0-1l-6-6z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p style="margin-bottom: 1rem;">
+                        This retriever is referenced by other components and can't be deleted. To delete this retriever, first remove or deactivate all references to it.
+                    </p>
+
+                    <div class="dependencies-list">
+                        <!-- Agent Actions -->
+                        <div class="dependency-group">
+                            <div class="dependency-group-header" onclick="toggleGroup(this)">
+                                <span><span class="chevron">▶</span> Agent Actions</span>
+                                <span class="dependency-count">(1)</span>
+                            </div>
+                            <div class="dependency-items" style="display: none;">
+                                <div class="dependency-item">
+                                    <div class="dependency-item-info">
+                                        <a href="#" class="dependency-item-name">My Retriever Action</a>
+                                        <div class="dependency-item-meta">API Name: MyRetrieverAction</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Flows -->
+                        <div class="dependency-group">
+                            <div class="dependency-group-header" onclick="toggleGroup(this)">
+                                <span><span class="chevron">▶</span> Flows</span>
+                                <span class="dependency-count">(1)</span>
+                            </div>
+                            <div class="dependency-items" style="display: none;">
+                                <div class="dependency-item">
+                                    <div class="dependency-item-info">
+                                        <a href="#" class="dependency-item-name">My Retriever Flow</a>
+                                        <div class="dependency-item-meta">API Name: MyRetrieverFlow</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Prompt Templates -->
+                        <div class="dependency-group">
+                            <div class="dependency-group-header" onclick="toggleGroup(this)">
+                                <span><span class="chevron">▶</span> Prompt Templates</span>
+                                <span class="dependency-count">(1)</span>
+                            </div>
+                            <div class="dependency-items" style="display: none;">
+                                <div class="dependency-item">
+                                    <div class="dependency-item-info">
+                                        <a href="#" class="dependency-item-name">My Prompt Template</a>
+                                        <div class="dependency-item-meta">API Name: My_Prompt_Template</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Ensemble Retrievers -->
+                        <div class="dependency-group">
+                            <div class="dependency-group-header" onclick="toggleGroup(this)">
+                                <span><span class="chevron">▶</span> Ensemble Retrievers</span>
+                                <span class="dependency-count">(1)</span>
+                            </div>
+                            <div class="dependency-items" style="display: none;">
+                                <div class="dependency-item">
+                                    <div class="dependency-item-info">
+                                        <a href="#" class="dependency-item-name">My Ensemble Retriever</a>
+                                        <div class="dependency-item-meta">API Name: MyEnsembleRetriever</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Data Libraries -->
+                        <div class="dependency-group">
+                            <div class="dependency-group-header" onclick="toggleGroup(this)">
+                                <span><span class="chevron">▶</span> Data Libraries</span>
+                                <span class="dependency-count">(1)</span>
+                            </div>
+                            <div class="dependency-items" style="display: none;">
+                                <div class="dependency-item">
+                                    <div class="dependency-item-info">
+                                        <a href="#" class="dependency-item-name">My Data Library</a>
+                                        <div class="dependency-item-meta">API Name: My_Data_Library</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Companion Org References -->
+                        <div class="dependency-group">
+                            <div class="dependency-group-header" onclick="toggleGroup(this)">
+                                <span><span class="chevron">▶</span> Companion Org References</span>
+                                <span class="dependency-count">(1)</span>
+                            </div>
+                            <div class="dependency-items" style="display: none;">
+                                <div class="dependency-item">
+                                    <div class="dependency-item-info">
+                                        <span class="dependency-item-name no-link">RemoteAgentAction</span>
+                                        <div class="dependency-item-meta">
+                                            <span class="companion-org-badge">Sales Cloud LOB</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="slds-button" onclick="closeModal('errorModal')">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.dataset.tab;
+
+                // Update tab active state
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                // Show/hide content
+                if (tabName === 'overview') {
+                    document.getElementById('overviewTab').style.display = 'block';
+                    document.getElementById('integrationsTab').style.display = 'none';
+                } else if (tabName === 'integrations') {
+                    document.getElementById('overviewTab').style.display = 'none';
+                    document.getElementById('integrationsTab').style.display = 'block';
+                }
+            });
+        });
+
+        // Delete button
+        document.getElementById('deleteBtn').addEventListener('click', () => {
+            document.getElementById('confirmModal').classList.add('show');
+        });
+
+        // Modal functions
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        function showErrorModal() {
+            closeModal('confirmModal');
+            setTimeout(() => {
+                document.getElementById('errorModal').classList.add('show');
+            }, 200);
+        }
+
+        function switchToIntegrations() {
+            // Switch to integrations tab
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelector('[data-tab="integrations"]').classList.add('active');
+            document.getElementById('overviewTab').style.display = 'none';
+            document.getElementById('integrationsTab').style.display = 'block';
+        }
+
+        // Toggle dependency groups
+        function toggleGroup(header) {
+            const items = header.nextElementSibling;
+            const chevron = header.querySelector('.chevron');
+
+            if (items.style.display === 'none') {
+                items.style.display = 'block';
+                chevron.classList.add('expanded');
+            } else {
+                items.style.display = 'none';
+                chevron.classList.remove('expanded');
+            }
+        }
+    </script>
+</body>
+</html>
