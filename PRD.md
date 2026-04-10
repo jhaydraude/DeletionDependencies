@@ -49,8 +49,7 @@ Users must manually search across multiple areas (Agent Actions, Flows, Prompt T
 4. **Consistency:** Follow existing Salesforce patterns for dependency management (e.g., DMO deletion flow)
 
 ### Success Metrics
-- **User satisfaction:** Post-feature survey scores for deletion workflow
-
+- TBD
 
 ---
 
