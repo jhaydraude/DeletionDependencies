@@ -186,6 +186,98 @@ So that I understand which dependencies I can control
 | Companion Org | `null` | No (cross-org) |
 | Other | `null` | May not work |
 
+### FR-3a: Dependency Display Scenarios
+**Requirement:** Present dependencies with appropriate information and navigation based on availability
+
+Dependencies are displayed according to three distinct scenarios based on what information and navigation capabilities are available:
+
+#### Scenario 1: Known Entities with UI Navigation
+**Applies to:** Agent Actions, Flows, Prompt Templates, Ensemble Retrievers, Data Libraries
+
+**Display Elements:**
+- Entity Label (user-friendly name)
+- Entity Name (API/developer name)
+- Record ID
+- Clickable navigation link to setup page
+
+**Example:**
+```
+My Retriever Action
+API Name: MyRetrieverAction
+[Clickable blue link → opens /lightning/setup/AgentAssetLibrary/{id}/editAction]
+```
+
+**Behavior:** Users can click the entity name to navigate directly to the component's setup page for editing or removal.
+
+---
+
+#### Scenario 2: Local Dependencies Without UI Pages
+**Applies to:** Other teams' entities with foreign key references, unclassified entity types, entities without setup pages
+
+**Display Elements:**
+- Entity Name (API/developer name or type)
+- Record ID (required for identification)
+- API Name (if available)
+- Text indicator: "No UI page available"
+
+**Examples:**
+```
+SearchAnswersIndexConfig
+Record ID: 0DI5g000000GmKlGAK • No UI page available
+[Plain text, not clickable]
+
+AIRetrieverFieldMapping
+Record ID: 1CzS-B0000007cBt0AI • API Name: Basic_KA_LOB_1Cy_ASPb98816a1
+[Plain text, not clickable]
+```
+
+**Behavior:** Displayed as plain text (not clickable). Users must use the Record ID to locate and manage these dependencies through alternative means (e.g., API, Workbench, or contacting the owning team).
+
+**Why no link:** These entities either:
+- Have foreign key relationships to retrievers but no dedicated UI
+- Belong to other teams that haven't provided setup pages
+- Are discovered generically and not yet classified
+- Are internal/system entities without user-facing interfaces
+
+---
+
+#### Scenario 3: Companion Org Remote References
+**Applies to:** Dependencies from companion orgs in multi-org Data Cloud environments
+
+**Display Elements:**
+- Entity Name (API/developer name)
+- Record ID
+- API Name (if available)
+- Companion org badge displaying org name (e.g., "Sales Cloud LOB")
+
+**Example:**
+```
+RemoteAgentAction
+Record ID: 172YY00000Qrst
+[Sales Cloud LOB badge]
+[Plain text, not clickable]
+```
+
+**Behavior:** Displayed as plain text (not clickable) with visual badge indicating the companion org. These are informational only - users cannot navigate from the home org to the companion org's UI.
+
+**Why no link:**
+- Retriever is synced from home org to companion org
+- Used by flows, prompt templates, or other components in the companion org
+- No tool exists to construct cross-org navigation URLs
+- Different org context with separate authentication and UI
+
+**User Action Required:** Contact the companion org administrator or use companion org-specific tools to manage these references.
+
+---
+
+**Summary Table:**
+
+| Scenario | Link Available | Display Style | Information Shown | User Action |
+|----------|---------------|---------------|-------------------|-------------|
+| Known Entities | ✅ Yes | Clickable blue link | Label, API Name, Record ID | Click to navigate and edit |
+| Local No-UI | ❌ No | Plain text | Entity Name, Record ID, optional API Name | Use Record ID via API/Workbench |
+| Companion Org | ❌ No | Plain text + badge | Entity Name, Record ID, Org badge | Contact companion org admin |
+
 ### FR-4: Error Modal UI
 **Requirement:** Display improved error modal with dependency list
 
